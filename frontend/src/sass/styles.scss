@@ -1,0 +1,29 @@
+// Utils
+// ============
+@import "utils/variables";
+@import "utils/functions";
+
+// Vendors
+// ============
+@import "node_modules/bootstrap/scss/bootstrap";
+
+// Modules
+// ============
+@import "modules/layouts";
+
+// Pages
+// ============
+@import "pages/login";
+@import "pages/messagerie";
+
+// Général
+// ============
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.navbar-brand > img {
+  max-width: 200px;
+  object-fit: contain;
+}
