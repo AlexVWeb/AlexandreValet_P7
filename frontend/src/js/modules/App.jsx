@@ -4,12 +4,12 @@ import {
     Switch,
     Route,
     Link,
-    useLocation, useRouteMatch, useHistory
+    useRouteMatch, useHistory
 } from "react-router-dom";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Messenger from "../pages/Messenger";
-import {getCookie, Images} from "../utils";
+import {deleteCookie, Images} from "../utils";
 import User from "../controllers/user";
 
 export const App = () => {
@@ -23,7 +23,6 @@ export const App = () => {
         });
 
         let isCurrentLink = false
-        console.log(match, userIsLoggedIn)
         if (match !== null) {
             if (match.isExact) {
                 isCurrentLink = true
@@ -42,18 +41,23 @@ export const App = () => {
             }
         }
 
-        return (
-            <Link className={isCurrentLink ? `nav-link active ${classname}` : `nav-link ${classname}`} to={to}>{label}</Link>
-        )
+        return <Link className={isCurrentLink ? `nav-link active ${classname}` : `nav-link ${classname}`}
+                     to={to}>{label}</Link>
+    }
 
+    const btnLogout = (e) => {
+        e.preventDefault()
+        deleteCookie('token')
+        document.location.href = '/login'
     }
 
     return <>
         <Router>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <a className="navbar-brand" href="#"><img src={Images('icon-left-font-monochrome-black.svg')}
-                                                              alt="Logo Navbar"/></a>
+                    <a className="navbar-brand" href="#">
+                        <img src={Images('icon-left-font-monochrome-black.svg')} alt="Logo Navbar"/>
+                    </a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +68,7 @@ export const App = () => {
                             {
                                 userIsLoggedIn ? <>
                                     <LinkMenu to="/messagerie" label={"Messagerie"}></LinkMenu>
-                                    <LinkMenu to="/logout" classname={'ms-auto'} label={"Déconnexion"}></LinkMenu>
+                                    <button className={"btn"} onClick={btnLogout} id={"linkLogout"}>Déconnexion</button>
                                 </> : <>
                                     <LinkMenu to="/login"
                                               label={"Connexion"}>Connexion</LinkMenu>
@@ -84,7 +88,6 @@ export const App = () => {
                             <Messenger/>
                         </Route>
                     </> : <>
-
                         <Route path="/login">
                             <Login/>
                         </Route>

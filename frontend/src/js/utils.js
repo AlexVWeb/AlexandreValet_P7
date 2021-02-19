@@ -25,6 +25,10 @@ export function getCookie(name) {
     return null;
 }
 
+export function deleteCookie(name) {
+    setCookie(name, '', -1);
+}
+
 export function notification() {
     return Swal.mixin({
         toast: true,

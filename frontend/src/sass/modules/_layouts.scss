@@ -2,6 +2,12 @@
   min-height: var(--height-navbar);
 }
 
+#linkLogout {
+  cursor: pointer;
+  margin-left: auto;
+  @extend .nav-link;
+}
+
 .sidebar {
 
 }
