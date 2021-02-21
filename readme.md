@@ -28,8 +28,10 @@ Reddit - ils veulent que les employés écrivent et/ou partagent des articles av
 - Crypto JS (Pour crypter certain champs)
 - Bcrypt (Pour crypter les mots de passes)
 - Maria DB (Base de donnée)
+- JsonWebToken
 
 ### Front-End :
 - React
+- React Router  
 - TenorJS (Pour l'affichage des GIFs)
 - Bootstrap
