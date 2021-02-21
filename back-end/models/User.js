@@ -60,6 +60,8 @@ class User {
                 delete user.token_remember
                 delete user.created_at
                 delete user.updated_at
+                let roles = JSON.parse(user.roles)
+                user.roles = roles.toString()
                 users.push(user)
             })
             return users
