@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-export default function User({id, pseudo}) {
+export default function User({id, pseudo, role}) {
     return <>
         <div className="sidebar__user dropend">
             <img
@@ -15,9 +15,11 @@ export default function User({id, pseudo}) {
                 </svg>
             </button>
             <ul className="dropdown-menu user__options" data-user={id}>
-                <li><a className="dropdown-item" href="#">Passez en administrateur</a></li>
-                <li><a className="dropdown-item" href="#">Menu item</a></li>
-                <li><a className="dropdown-item" href="#">Menu item</a></li>
+                {
+                    role !== 'ROLE_ADMIN' ?
+                        <li className="dropdown-item">Passez en administrateur</li> :
+                        <li className="dropdown-item">Passez en membres</li>
+                }
             </ul>
         </div>
     </>
