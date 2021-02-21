@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useState, useRef} from "react"
 import Images, {getCookie} from "../utils";
 import Sidebar from "../modules/Sidebar";
 import Message from "../modules/Message";
 import socketIOClient from "socket.io-client";
 import User from "../controllers/user"
 import moment from 'moment';
+
 moment.locale('fr')
 
 const ENDPOINT = "http://localhost:3000";
@@ -16,27 +17,64 @@ export default function Messenger() {
     let user = (new User()).getCurrentUser()
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([])
-    const [response, setResponse] = useState('');
 
     io.on("newMessage", (content) => {
         setMessages([...messages, content])
     });
 
-    const token = getCookie('token')
+    useEffect(() => {
+        async function effect() {
+            // Chargement des messages
+            let oldMessages = []
+            let listMessageReq = await fetch(`${process.env.API_URL}/api/messages`)
+            let listMessage = await listMessageReq.json()
+
+            await Promise.all(listMessage.map(async (msg) => {
+                const userRequest = await fetch(`${process.env.API_URL}/api/user/${msg.user_id}`)
+                if (userRequest.ok) {
+                    const user = await userRequest.json()
+                    let newMessage = {
+                        content: msg.content,
+                        date: msg.date,
+                        user: {
+                            id: user.id,
+                            pseudo: user.pseudo
+                        }
+                    }
+                    oldMessages = [...oldMessages, newMessage]
+                }
+            }))
+            oldMessages.sort((a, b) => {
+                return (moment(a.date).isAfter(b.date)) ? 1 : ((moment(b.date).isAfter(a.date)) ? -1 : 0)
+            })
+            setMessages(oldMessages)
+
+            const scrollToBottom = (node) => {
+                node.scrollTop = node.scrollHeight;
+            }
+
+            scrollToBottom(document.querySelector('.messenger_fil'));
+        }
+
+        effect()
+
+    }, [])
 
     const _onSubmit = (e) => {
         e.preventDefault()
-        let newMessage = {
-            content: message,
-            date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            user: {
-                id: user.userId,
-                pseudo: user.pseudo
+        if (message !== '') {
+            let newMessage = {
+                content: message,
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
+                user: {
+                    id: user.userId,
+                    pseudo: user.pseudo
+                }
             }
+            io.emit("message", newMessage)
+            setMessages([...messages, newMessage])
+            setMessage('')
         }
-        io.emit("message", newMessage)
-        setMessages([...messages, newMessage])
-        setMessage('')
     }
 
     return <>
