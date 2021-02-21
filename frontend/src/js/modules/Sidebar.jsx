@@ -20,7 +20,9 @@ export default function Sidebar() {
             <div className="sidebar__users">
                 {
                     members.map((user, key) => {
-                        return user.roles === 'ROLE_ADMIN' ? <User key={key} pseudo={user.pseudo} id={user.id} role={user.roles}/> : ''
+                        return user.roles === 'ROLE_ADMIN' ?
+                            <User key={key} pseudo={user.pseudo} id={user.id} role={user.roles}
+                                  isConnected={user.isconnected}/> : ''
                     })
                 }
             </div>
@@ -31,7 +33,9 @@ export default function Sidebar() {
             <div className="sidebar__users">
                 {
                     members.map((user, key) => {
-                        return user.roles === 'ROLE_MEMBER' ? <User key={key} pseudo={user.pseudo} id={user.id} role={user.roles}/> : ''
+                        return user.roles === 'ROLE_MEMBER' ?
+                            <User key={key} pseudo={user.pseudo} id={user.id} role={user.roles}
+                                  isConnected={user.isconnected}/> : ''
                     })
                 }
             </div>

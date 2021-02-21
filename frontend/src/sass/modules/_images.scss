@@ -6,9 +6,31 @@ $sizes: 40px, 50px;
   }
 }
 
-$user_status: ('online': 'green', 'offline': 'red');
+.user-avatar {
+  display: inline-block;
+  position: relative;
+  padding-right: 10px;
+}
+
+.status-overlay {
+  background-color: white;
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 1;
+  padding: 2px;
+  border-radius: 12px;
+  height: 20px;
+  display: flex;
+
+  & > svg {
+    font-size: 16px;
+  }
+}
+
+$user_status: ('online': #4BAE4F, 'offline': #808080);
 @each $status, $color in $user_status {
   .status--#{$status} {
-    @debug $color;
+    color: $color;
   }
 }
