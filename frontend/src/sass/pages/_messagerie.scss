@@ -4,19 +4,12 @@
   display: flex;
 }
 
-#messenger {
-  .sidebar {
-    background: #02452d;
-    min-width: 300px;
-    min-height: calc(100vh - var(--height-navbar));
-  }
-}
-
 .messenger_contents {
   background: #069461;
   width: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   h3 {
     margin: 0;
@@ -37,7 +30,8 @@
   display: flex;
   flex-direction: column;
   row-gap: space(2);
-  margin-top: auto;
+  max-height: 750px;
+  overflow-y: scroll;
 }
 
 .message {
@@ -49,7 +43,7 @@
   }
 
   &__avatar {
-    max-width: 50px;
+    @extend .avatar-50px;
     margin-right: space(1);
   }
 
@@ -80,7 +74,11 @@
 
 .messenger_form {
   display: flex;
-  margin-bottom: space(2);
+  padding: space(2) 0;
+  position: fixed;
+  right: 0;
+  left: 300px;
+  bottom: 0;
 
   &__message {
     width: 100%;

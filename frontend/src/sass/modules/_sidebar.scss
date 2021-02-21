@@ -1,0 +1,48 @@
+#messenger > .sidebar {
+  background: #2f3136;
+  min-width: 300px;
+  min-height: calc(100vh - var(--height-navbar));
+}
+
+.sidebar {
+  p {
+    margin: 0;
+  }
+
+  .sidebar__heading {
+    text-align: center;
+    font-size: 1.25rem;
+    color: #fff;
+    padding: 16px;
+    border-top: 2px solid #535760;
+    border-bottom: 2px solid #535760;
+  }
+
+  .sidebar__users {
+    display: flex;
+    flex-direction: column;
+    column-gap: space(1);
+    padding: space(1) space(1);
+  }
+
+  .sidebar__user {
+    display: flex;
+    align-items: center;
+    column-gap: space(1);
+    padding: space(1);
+    color: rgb(142, 146, 151);
+    font-weight: 500;
+    font-size: 1rem;
+    border-radius: space(1);
+    transition: all .3s;
+    cursor: pointer;
+
+    &:hover {
+      & > button {
+        color: white;
+      }
+      color: #dcddde;
+      background: #4f545c29;
+    }
+  }
+}

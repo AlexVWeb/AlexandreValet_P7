@@ -1,0 +1,14 @@
+$sizes: 40px, 50px;
+@each $size in $sizes {
+  .avatar-#{$size} {
+    height: $size;
+    width: $size;
+  }
+}
+
+$user_status: ('online': 'green', 'offline': 'red');
+@each $status, $color in $user_status {
+  .status--#{$status} {
+    @debug $color;
+  }
+}

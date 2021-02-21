@@ -1,15 +1,17 @@
+// Vendors
+// ============
+@import "node_modules/bootstrap/scss/bootstrap";
+
 // Utils
 // ============
 @import "utils/variables";
 @import "utils/functions";
 
-// Vendors
-// ============
-@import "node_modules/bootstrap/scss/bootstrap";
-
 // Modules
 // ============
 @import "modules/layouts";
+@import "modules/sidebar";
+@import "modules/images";
 
 // Pages
 // ============
@@ -21,6 +23,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 body {
   font-family: 'Roboto', sans-serif;
+  overflow: hidden;
 }
 
 .navbar-brand > img {
