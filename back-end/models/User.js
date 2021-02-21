@@ -49,6 +49,24 @@ class User {
             }
         })
     }
+
+    async findAll() {
+        try {
+            let users = []
+            let userReq = await pool.query('SELECT * FROM users')
+            userReq.forEach((user) => {
+                delete user.email
+                delete user.password
+                delete user.token_remember
+                delete user.created_at
+                delete user.updated_at
+                users.push(user)
+            })
+            return users
+        } catch (error) {
+            return res.status(404).json({error})
+        }
+    }
 }
 
 module.exports = User

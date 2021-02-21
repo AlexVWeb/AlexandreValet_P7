@@ -103,6 +103,11 @@ exports.get = async (req, res) => {
     return res.status(404).json({error: 'Aucun utilisateur trouvé'})
 }
 
+exports.getAll = async (req, res) => {
+    let users = await (new User().findAll())
+    return res.status(200).json(users)
+}
+
 function emailIsValid(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
