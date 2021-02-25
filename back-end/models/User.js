@@ -26,8 +26,6 @@ class User {
          created_at timestamp not null,
          updated_at timestamp
         );
-        alter table users
-            add isconnected boolean default false not null;        
         `
         //@formatter:on
         await pool.query(createTable, (err) => {

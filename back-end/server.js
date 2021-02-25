@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
 const Message = require("./models/Message");
+const User = require("./models/User");
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -47,30 +48,26 @@ const io = require('socket.io')(server, {
     },
     allowEIO3: true
 });
-let interval;
 
+let interval;
 io.on("connection", (socket) => {
-    // console.log("New client connected");
     if (interval) {
         clearInterval(interval);
     }
 
     socket.on("message", async (message) => {
         await (new Message()).createTable()
-        console.log(message)
         let insert = (new Message()).insert({
             userID: message.user.id,
             date: message.date,
             content: message.content
         })
-        console.log(insert)
         socket.broadcast.emit("newMessage", message);
     });
 
-    socket.on("disconnect", () => {
-        // console.log("Client disconnected");
+    socket.on('disconnect', () => {
         clearInterval(interval);
-    });
+    })
 });
 
 server.on('error', errorHandler);
