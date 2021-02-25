@@ -8,7 +8,7 @@ import moment from 'moment';
 
 moment.locale('fr')
 
-const ENDPOINT = "http://localhost:3000";
+const ENDPOINT = process.env.API_URL;
 const io = socketIOClient(ENDPOINT, {
     withCredentials: true
 })
@@ -17,6 +17,10 @@ export default function Messenger() {
     let user = (new User()).getCurrentUser()
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([])
+
+    const scrollToBottom = (node) => {
+        node.scrollTop = node.scrollHeight;
+    }
 
     io.on("newMessage", (content) => {
         setMessages([...messages, content])
@@ -49,10 +53,6 @@ export default function Messenger() {
             })
             setMessages(oldMessages)
 
-            const scrollToBottom = (node) => {
-                node.scrollTop = node.scrollHeight;
-            }
-
             scrollToBottom(document.querySelector('.messenger_fil'));
         }
 
@@ -74,6 +74,9 @@ export default function Messenger() {
             io.emit("message", newMessage)
             setMessages([...messages, newMessage])
             setMessage('')
+            setTimeout(() => {
+                scrollToBottom(document.querySelector('.messenger_fil'));
+            }, 500)
         }
     }
 
@@ -92,6 +95,7 @@ export default function Messenger() {
                                     key={key}
                                     avatar={"https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"}
                                     pseudo={message.user.pseudo}
+                                    user_id={message.user.id}
                                     date={moment(message.date).fromNow()}
                                     content={message.content}/>
                         })
@@ -104,7 +108,6 @@ export default function Messenger() {
                            type="text"
                            className={"messenger_form__message"}
                            placeholder={'Envoyer un message à #général'} value={message}/>
-                    <button className={"btn btn-primary me-3"}>Envoyé</button>
                 </form>
             </div>
         </div>
