@@ -58,18 +58,19 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
     const email = req.body.email
     const password = req.body.password
-    const user = await (new User()).findByEmail(email)
+    let user = await (new User()).findByEmail(email)
     if (user) {
         try {
             const valid = await bcrypt.compare(password, user.password)
             if (!valid) {
                 return res.status(401).json({error: 'Identifiant ou mot de passe incorrect'})
             }
-
+            user = purgePublicUser(user)
             const token = jwt.sign(
                 {
                     userId: user.id,
-                    pseudo: user.pseudo
+                    pseudo: user.pseudo,
+                    role: user.roles
                 },
                 process.env.JWT_TOKEN,
                 {expiresIn: '24h'}
@@ -92,12 +93,7 @@ exports.get = async (req, res) => {
     const id = req.params.id
     let user = await (new User()).findById(id)
     if (user) {
-        delete user.email
-        delete user.password
-        delete user.roles
-        delete user.token_remember
-        delete user.created_at
-        delete user.updated_at
+        user = purgePublicUser(user)
         return res.status(200).json(user)
     }
     return res.status(404).json({error: 'Aucun utilisateur trouvé'})
@@ -114,4 +110,19 @@ function emailIsValid(email) {
 
 function fieldIsDefined(field) {
     return !(field === '' || field === undefined);
+}
+
+function purgePublicUser(user) {
+    delete user.email
+    delete user.password
+    delete user.token_remember
+    delete user.created_at
+    delete user.updated_at
+    let roles = JSON.parse(user.roles)
+    user.roles = roles.toString()
+    return user
+}
+
+exports.decodeToken = (token) => {
+    return jwt.verify(token, process.env.JWT_TOKEN)
 }
