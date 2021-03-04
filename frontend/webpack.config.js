@@ -1,5 +1,4 @@
 let Encore = require('@symfony/webpack-encore');
-const path = require('path');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 historyApiFallback = require('connect-history-api-fallback')
 
@@ -78,7 +77,12 @@ Encore
             port: 3001,
             middleware: [historyApiFallback()],
             notify: false,
-            open: false
+            open: false,
+            ghostMode: {
+                clicks: false,
+                forms: false,
+                scroll: false
+            }
         })
     )
     .addPlugin(new Dotenv( { path: '../.env', systemvars: true } ))
