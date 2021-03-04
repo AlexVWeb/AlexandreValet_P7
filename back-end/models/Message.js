@@ -22,7 +22,26 @@ class Message {
 
     insert({userID, date, content}) {
         let value = [userID, date, content]
+
         return pool.query(`INSERT INTO ${this.tableName}(user_id, date, content) VALUE (?, ?, ?)`, value)
+            .then(r => {
+                return r
+            })
+            .catch(error => console.error(error))
+    }
+
+
+
+    delete(id) {
+        return pool.query(`DELETE FROM ${this.tableName} WHERE id = ${id}`)
+            .then(r => {
+                return r
+            })
+            .catch(error => console.error(error))
+    }
+
+    exist(id) {
+        return pool.query(`SELECT * FROM ${this.tableName} WHERE id = ${id}`)
             .then(r => {
                 return r
             })
