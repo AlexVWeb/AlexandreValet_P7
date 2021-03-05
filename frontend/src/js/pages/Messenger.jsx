@@ -1,10 +1,10 @@
-import React, {useEffect, useState, useRef} from "react"
-import Images, {getCookie} from "../utils";
+import React, {useEffect, useState} from "react"
 import Sidebar from "../modules/Sidebar";
 import Message from "../modules/Message";
 import socketIOClient from "socket.io-client";
 import User from "../controllers/user"
 import moment from 'moment';
+import {ModalProfil} from "../modules/ModalProfil";
 
 moment.locale('fr')
 
@@ -26,6 +26,11 @@ export default function Messenger() {
         setMessages([...messages, content])
     });
 
+    io.on("message.deleted", (id) => {
+        const messagesFiltered = messages.filter(message => message.id !== id)
+        setMessages(messagesFiltered)
+    })
+
     useEffect(() => {
         async function effect() {
             // Chargement des messages
@@ -38,6 +43,7 @@ export default function Messenger() {
                 if (userRequest.ok) {
                     const user = await userRequest.json()
                     let newMessage = {
+                        id: msg.id,
                         content: msg.content,
                         date: msg.date,
                         user: {
@@ -57,7 +63,6 @@ export default function Messenger() {
         }
 
         effect()
-
     }, [])
 
     const _onSubmit = (e) => {
@@ -82,6 +87,7 @@ export default function Messenger() {
 
     return <>
         <div id={"messenger"} className={"container-fluid container_messenger"}>
+            <ModalProfil/>
             <Sidebar/>
             <div className={"messenger_contents"}>
                 <header>
@@ -92,18 +98,18 @@ export default function Messenger() {
                     {
                         messages.map((message, key) => {
                             return <Message
-                                    key={key}
-                                    avatar={"https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"}
-                                    pseudo={message.user.pseudo}
-                                    user_id={message.user.id}
-                                    date={moment(message.date).fromNow()}
-                                    content={message.content}/>
+                                key={key}
+                                avatar={"https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"}
+                                date={moment(message.date).fromNow()}
+                                content={message.content}
+                                id={message.id}
+                                user={message.user}
+                            />
                         })
                     }
                 </div>
 
                 <form onSubmit={_onSubmit} className="messenger_form">
-                    {/*<div className={"messenger_form__message"}></div>*/}
                     <input onChange={(e) => setMessage(e.target.value)}
                            type="text"
                            className={"messenger_form__message"}

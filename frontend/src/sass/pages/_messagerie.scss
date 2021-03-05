@@ -37,6 +37,13 @@
 .message {
   display: flex;
   align-items: center;
+  padding: space(0.5);
+  transition: .3s all;
+
+  &:hover {
+    background: #04644280;
+    border-radius: space(1);
+  }
 
   * {
     margin: 0;
@@ -64,11 +71,15 @@
 
   &__date {
     font-size: 0.8rem;
-    color: #00000080;
+    color: #000c;
   }
 
   &__content {
     color: white;
+  }
+
+  &__options > li {
+    cursor: pointer;
   }
 }
 
@@ -87,6 +98,7 @@
     border-radius: 20px;
     margin: 0 space(2);
     height: 40px;
+    color: white;
 
     padding: 0 space(2);
     font-size: 0.8rem;
