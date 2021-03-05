@@ -6,4 +6,9 @@
   cursor: pointer;
   margin-left: auto;
   @extend .nav-link;
+  transition: all .3s;
+
+  :hover {
+    color: red;
+  }
 }
