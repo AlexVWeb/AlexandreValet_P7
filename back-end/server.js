@@ -1,7 +1,6 @@
 const http = require('http');
 const app = require('./app');
 const Message = require("./models/Message");
-const User = require("./models/User");
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -57,13 +56,22 @@ io.on("connection", (socket) => {
 
     socket.on("message", async (message) => {
         await (new Message()).createTable()
-        let insert = (new Message()).insert({
+        (new Message()).insert({
             userID: message.user.id,
             date: message.date,
             content: message.content
         })
         socket.broadcast.emit("newMessage", message);
     });
+
+    socket.on("message.delete", async ({id, currentUser}) => {
+        const userMessage = await (new Message()).exist(id)
+        if (currentUser.role === "ROLE_MEMBER" && currentUser.userId === userMessage.user_id ||
+            currentUser.role === "ROLE_ADMIN") {
+            await (new Message()).delete(id)
+        }
+        socket.broadcast.emit("message.deleted", id)
+    })
 
     socket.on('disconnect', () => {
         clearInterval(interval);

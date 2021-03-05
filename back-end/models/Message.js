@@ -30,8 +30,6 @@ class Message {
             .catch(error => console.error(error))
     }
 
-
-
     delete(id) {
         return pool.query(`DELETE FROM ${this.tableName} WHERE id = ${id}`)
             .then(r => {
@@ -41,9 +39,9 @@ class Message {
     }
 
     exist(id) {
-        return pool.query(`SELECT * FROM ${this.tableName} WHERE id = ${id}`)
+        return pool.query(`SELECT * FROM ${this.tableName} WHERE id = ${id} LIMIT 1`)
             .then(r => {
-                return r
+                return r[0]
             })
             .catch(error => console.error(error))
     }

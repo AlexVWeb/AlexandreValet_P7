@@ -9,7 +9,6 @@ exports.delete = async (req, res) => {
     let id = req.params.id
     if (id) {
         const getMessage = await (new Message()).exist(id)
-        console.log(getMessage)
         if (getMessage) {
             await (new Message()).delete(id)
         } else {
