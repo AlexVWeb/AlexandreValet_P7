@@ -1,35 +1,71 @@
-import React, {useEffect} from "react";
+import React, {} from "react";
+import UserController from "../controllers/user"
 
-export default function User({id, pseudo, role, isConnected}) {
+export default function User({id, pseudo, role}) {
+    let currentUser = (new UserController()).getCurrentUser()
+    let currentRole = currentUser.role
+
+    const dropdownRole = (userId, role) => {
+        let list = ''
+        /**
+         * Si currentUser est admin et veux changez son role alors rien
+         * Si currentUser est admin et veux changez le role d'un membre alors "passez en admin"
+         * Si currentUser est membre et veux changez le role d'un membre alors rien
+         * Si currentUser est admin et veux changez le role d'un admin alors "passez en membre"
+         */
+
+        if (role === 'ROLE_MEMBER' && currentUser.userId !== userId) {
+            list = <li className="dropdown-item">Passez en administrateur</li>
+        }
+
+        return <>
+            {
+                (currentRole === 'ROLE_ADMIN' && currentUser.userId !== userId) && <>
+                    <button className='btn ms-auto' data-bs-toggle="dropdown" aria-expanded="false" aria-label={"Menu de suppresion"}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                            <path
+                                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                        </svg>
+                    </button>
+                    <ul className="dropdown-menu user__options" data-user={id}>
+                        {list}
+                    </ul>
+                </>
+            }
+        </>
+    }
+
     return <>
         <div className="sidebar__user dropend">
             <div className="user-avatar">
                 <img
                     src={'https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light'}
                     className="avatar-50px status--online" alt={"avatar"}/>
-                <div className={isConnected ? 'status-overlay status--online' : 'status-overlay status--offline'}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         className="bi bi-record-circle-fill" viewBox="0 0 16 16">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-8 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                    </svg>
-                </div>
+                {
+                    id === currentUser.userId && <>
+                        <div className={"status-overlay status--current"}>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M1.15555 5.30225C1.03248 5.30225 0.912184 5.33874 0.80986 5.40711C0.707536 5.47548 0.627784 5.57266 0.580689 5.68635C0.533595 5.80005 0.521273 5.92516 0.545281 6.04586C0.56929 6.16656 0.628551 6.27743 0.71557 6.36445C0.80259 6.45146 0.913459 6.51073 1.03416 6.53473C1.15486 6.55874 1.27997 6.54642 1.39366 6.49933C1.50736 6.45223 1.60454 6.37248 1.67291 6.27016C1.74128 6.16783 1.77777 6.04753 1.77777 5.92447C1.77777 5.75944 1.71221 5.60118 1.59553 5.48449C1.47884 5.3678 1.32057 5.30225 1.15555 5.30225Z"
+                                    fill="currentColor"/>
+                                <path
+                                    d="M15.0355 6.5422C15.3767 6.5422 15.6533 6.26561 15.6533 5.92442C15.6533 5.58323 15.3767 5.30664 15.0355 5.30664C14.6943 5.30664 14.4177 5.58323 14.4177 5.92442C14.4177 6.26561 14.6943 6.5422 15.0355 6.5422Z"
+                                    fill="currentColor"/>
+                                <path
+                                    d="M8.09783 2.84003C8.2202 2.84091 8.34008 2.80543 8.44225 2.73809C8.54443 2.67074 8.6243 2.57457 8.67174 2.46176C8.71918 2.34896 8.73205 2.22461 8.70872 2.10448C8.68539 1.98435 8.6269 1.87386 8.54068 1.78702C8.45447 1.70017 8.3444 1.64089 8.22444 1.61669C8.10448 1.59249 7.98004 1.60446 7.8669 1.65109C7.75376 1.69771 7.65701 1.77689 7.58893 1.87858C7.52085 1.98026 7.4845 2.09988 7.4845 2.22225C7.48449 2.38533 7.54897 2.5418 7.66387 2.65753C7.77876 2.77325 7.93476 2.83886 8.09783 2.84003Z"
+                                    fill="currentColor"/>
+                                <path
+                                    d="M14.0577 7.15559C13.5024 7.28323 12.9618 7.46792 12.4444 7.7067C11.8132 8.00957 11.217 8.38067 10.6666 8.81337C10.2766 8.33421 9.93985 7.81413 9.66217 7.26226C9.21903 6.31563 8.84472 5.33828 8.54217 4.33781C8.51364 4.24333 8.45447 4.16104 8.374 4.1039C8.29353 4.04677 8.19633 4.01804 8.09773 4.02226C7.99912 4.01804 7.90192 4.04677 7.82145 4.1039C7.74098 4.16104 7.68181 4.24333 7.65328 4.33781C7.35146 5.33853 6.97714 6.31593 6.53328 7.26226C6.25691 7.8135 5.92002 8.33225 5.52884 8.80892C4.97583 8.3812 4.38007 8.01183 3.75106 7.7067C3.24626 7.47109 2.71921 7.28647 2.17773 7.15559C2.09733 7.13628 2.01315 7.13977 1.93463 7.16568C1.85612 7.19159 1.78639 7.23889 1.73328 7.30226C1.67924 7.36773 1.64508 7.44731 1.63484 7.53158C1.6246 7.61586 1.63871 7.7013 1.6755 7.77781C2.51862 9.69489 3.11594 11.7109 3.45328 13.7778C3.47127 13.8822 3.52593 13.9767 3.60741 14.0443C3.68889 14.1119 3.79185 14.1482 3.89773 14.1467H12.3422C12.4481 14.1482 12.551 14.1119 12.6325 14.0443C12.714 13.9767 12.7686 13.8822 12.7866 13.7778C13.124 11.7109 13.7213 9.69489 14.5644 7.77781C14.6012 7.7013 14.6153 7.61586 14.6051 7.53158C14.5948 7.44731 14.5607 7.36773 14.5066 7.30226C14.4531 7.2381 14.3827 7.19031 14.3033 7.16437C14.2239 7.13843 14.1388 7.13539 14.0577 7.15559V7.15559ZM4.92439 12.6889C4.82664 12.6898 4.73082 12.6616 4.64911 12.608C4.5674 12.5543 4.50348 12.4775 4.46546 12.3875C4.42743 12.2974 4.41703 12.1981 4.43556 12.1021C4.45409 12.0061 4.50072 11.9178 4.56953 11.8484C4.63835 11.7789 4.72624 11.7315 4.82206 11.7121C4.91787 11.6927 5.01729 11.7022 5.1077 11.7394C5.1981 11.7766 5.27541 11.8398 5.32982 11.9211C5.38423 12.0023 5.41328 12.0978 5.41328 12.1956C5.41329 12.3257 5.36192 12.4505 5.27036 12.5429C5.1788 12.6353 5.05446 12.6878 4.92439 12.6889ZM8.10217 12.6889C7.97998 12.6773 7.86652 12.6205 7.78394 12.5297C7.70137 12.4389 7.65561 12.3206 7.65561 12.1978C7.65561 12.0751 7.70137 11.9567 7.78394 11.8659C7.86652 11.7751 7.97998 11.7183 8.10217 11.7067C8.22436 11.7183 8.33782 11.7751 8.4204 11.8659C8.50298 11.9567 8.54873 12.0751 8.54873 12.1978C8.54873 12.3206 8.50298 12.4389 8.4204 12.5297C8.33782 12.6205 8.22436 12.6773 8.10217 12.6889ZM11.2844 12.6889C11.1866 12.6898 11.0908 12.6616 11.0091 12.608C10.9274 12.5543 10.8635 12.4775 10.8255 12.3875C10.7874 12.2974 10.777 12.1981 10.7956 12.1021C10.8141 12.0061 10.8607 11.9178 10.9295 11.8484C10.9983 11.7789 11.0862 11.7315 11.1821 11.7121C11.2779 11.6927 11.3773 11.7022 11.4677 11.7394C11.5581 11.7766 11.6354 11.8398 11.6898 11.9211C11.7442 12.0023 11.7733 12.0978 11.7733 12.1956C11.7733 12.3257 11.7219 12.4505 11.6304 12.5429C11.5388 12.6353 11.4145 12.6878 11.2844 12.6889Z"
+                                    fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </>
+                }
             </div>
             <p>{pseudo}</p>
-
-            <button className='btn ms-auto' data-bs-toggle="dropdown" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                     className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                    <path
-                        d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                </svg>
-            </button>
-            <ul className="dropdown-menu user__options" data-user={id}>
-                {
-                    role !== 'ROLE_ADMIN' ?
-                        <li className="dropdown-item">Passez en administrateur</li> :
-                        <li className="dropdown-item">Passez en membres</li>
-                }
-            </ul>
+            {dropdownRole(id, role)}
         </div>
     </>
 }
