@@ -5,7 +5,7 @@
 }
 
 .messenger_contents {
-  background: #069461;
+  background: #484848;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -71,7 +71,7 @@
 
   &__date {
     font-size: 0.8rem;
-    color: #000c;
+    color: #fff;
   }
 
   &__content {
@@ -102,5 +102,17 @@
 
     padding: 0 space(2);
     font-size: 0.8rem;
+  }
+
+  & > button {
+    color: white;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+
+    & > svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 }

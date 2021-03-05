@@ -30,7 +30,7 @@
     align-items: center;
     column-gap: space(1);
     padding: space(1);
-    color: rgb(142, 146, 151);
+    color: white;
     font-weight: 500;
     font-size: 1rem;
     border-radius: space(1);
@@ -38,9 +38,7 @@
     cursor: pointer;
 
     &:hover {
-      & > button {
-        color: white;
-      }
+
       color: #dcddde;
       background: #4f545c29;
     }

@@ -13,7 +13,7 @@ $sizes: 40px, 50px;
 }
 
 .status-overlay {
-  background-color: white;
+  background-color: #595959;
   position: absolute;
   top: 32px;
   left: 32px;
@@ -28,7 +28,7 @@ $sizes: 40px, 50px;
   }
 }
 
-$user_status: ('online': #4BAE4F, 'offline': #808080);
+$user_status: ('online': #00b407, 'offline': #808080, 'current': #ffc100f5);
 @each $status, $color in $user_status {
   .status--#{$status} {
     color: $color;
