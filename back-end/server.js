@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
 
     socket.on("message", async (message) => {
         await (new Message()).createTable()
-        (new Message()).insert({
+        await (new Message()).insert({
             userID: message.user.id,
             date: message.date,
             content: message.content
