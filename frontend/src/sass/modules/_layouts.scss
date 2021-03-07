@@ -13,9 +13,23 @@
   }
 }
 
-.bi-three-dots-vertical {
-  transition: .2s all;
-  &:hover {
-    color: white;
+// Animate hover icon
+// ============
+$icons: (
+        'bi-three-dots-vertical': white,
+        'bi-trash-fill': red,
+        'bi-capslock-fill': green
+);
+@each $class, $color in $icons {
+  .#{$class} {
+    transition: .2s all;
+
+    &:hover {
+      color: $color;
+    }
   }
+}
+
+.bi-capslock-fill-down {
+  transform: rotate(180deg);
 }

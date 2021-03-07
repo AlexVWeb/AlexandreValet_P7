@@ -4,7 +4,7 @@ export function Images(name) {
     return `public/images/${name}`
 }
 
-export function setCookie(name, value, days) {
+export function setCookie(name, value, days = null) {
     let expires = "";
     if (days) {
         const date = new Date();

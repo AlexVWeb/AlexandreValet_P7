@@ -70,6 +70,14 @@ class User {
             return res.status(404).json({error})
         }
     }
+
+    static async updateOne(id, columnName, value) {
+        try {
+            await pool.query(`UPDATE users SET ${columnName} = ? WHERE id = ${id}`, value)
+        } catch (e) {
+
+        }
+    }
 }
 
 module.exports = User

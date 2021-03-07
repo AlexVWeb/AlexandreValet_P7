@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
 const Message = require("./models/Message");
+const User = require("./models/User");
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -71,6 +72,17 @@ io.on("connection", (socket) => {
             await (new Message()).delete(id)
         }
         socket.broadcast.emit("message.deleted", id)
+    })
+
+    socket.on("user.role", async ({id, role, currentUser}) => {
+        const getUser = await (new User()).findById(id)
+        // TODO: vérifier si le currentUser à les permissions
+        try {
+            await User.updateOne(id, 'roles', JSON.stringify([role]))
+            socket.broadcast.emit("user.newRole", {id, role})
+        } catch (e) {
+
+        }
     })
 
     socket.on('disconnect', () => {

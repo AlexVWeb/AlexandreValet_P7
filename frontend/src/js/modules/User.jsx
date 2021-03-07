@@ -1,36 +1,46 @@
 import React, {} from "react";
 import UserController from "../controllers/user"
+import socketIOClient from "socket.io-client";
 
-export default function User({id, pseudo, role}) {
-    let currentUser = (new UserController()).getCurrentUser()
+const ENDPOINT = process.env.API_URL;
+const io = socketIOClient(ENDPOINT, {
+    withCredentials: true
+})
+export default function User({id, pseudo, role, changeRole}) {
+    let currentUser = UserController.getCurrentUser()
     let currentRole = currentUser.role
 
     const dropdownRole = (userId, role) => {
-        let list = ''
-        /**
-         * Si currentUser est admin et veux changez son role alors rien
-         * Si currentUser est admin et veux changez le role d'un membre alors "passez en admin"
-         * Si currentUser est membre et veux changez le role d'un membre alors rien
-         * Si currentUser est admin et veux changez le role d'un admin alors "passez en membre"
-         */
+        const isAdmin = role === 'ROLE_ADMIN'
 
-        if (role === 'ROLE_MEMBER' && currentUser.userId !== userId) {
-            list = <li className="dropdown-item">Passez en administrateur</li>
+        const addAdminRole = (e) => {
+            e.preventDefault()
+            if (confirm("Voulez allez faire passez le membre en administrateur ?")) {
+                io.emit('user.role', {id, role: 'ROLE_ADMIN', currentUser})
+                changeRole('ROLE_ADMIN', id)
+            }
+        }
+
+        const addMemberRole = (e) => {
+            e.preventDefault()
+            if (confirm("Voulez allez faire passez l'administrateur en membre ?")) {
+                io.emit('user.role', {id, role: 'ROLE_MEMBER', currentUser})
+                changeRole('ROLE_MEMBER', id)
+            }
         }
 
         return <>
             {
                 (currentRole === 'ROLE_ADMIN' && currentUser.userId !== userId) && <>
-                    <button className='btn ms-auto' data-bs-toggle="dropdown" aria-expanded="false" aria-label={"Menu de suppresion"}>
+                    <button onClick={isAdmin ? addMemberRole : addAdminRole} className='btn ms-auto'
+                            title={isAdmin ? "Passez en membre" : "Passez en administrateur"}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                             className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                             className={`bi bi-capslock-fill ${isAdmin ? "bi-capslock-fill-down" : ''}`}
+                             viewBox="0 0 16 16">
                             <path
-                                d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                d="M7.27 1.047a1 1 0 0 1 1.46 0l6.345 6.77c.6.638.146 1.683-.73 1.683H11.5v1a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1H1.654C.78 9.5.326 8.455.924 7.816L7.27 1.047zM4.5 13.5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-1z"/>
                         </svg>
                     </button>
-                    <ul className="dropdown-menu user__options" data-user={id}>
-                        {list}
-                    </ul>
                 </>
             }
         </>

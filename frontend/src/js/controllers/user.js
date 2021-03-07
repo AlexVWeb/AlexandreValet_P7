@@ -2,10 +2,12 @@ import {getCookie} from "../utils";
 import jwt from "jsonwebtoken"
 
 class User {
-    constructor() {
+
+    static getToken() {
+        return getCookie('token')
     }
 
-    getCurrentUser() {
+    static getCurrentUser() {
         let token = getCookie('token')
         if (token) {
             try {
