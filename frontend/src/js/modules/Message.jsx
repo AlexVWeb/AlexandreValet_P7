@@ -1,6 +1,6 @@
-import React, {} from "react"
-import User from "../controllers/user";
+import React, {useState} from "react"
 import socketIOClient from "socket.io-client";
+import UserController from "../Class/User";
 
 const ENDPOINT = process.env.API_URL;
 const io = socketIOClient(ENDPOINT, {
@@ -8,13 +8,20 @@ const io = socketIOClient(ENDPOINT, {
 })
 
 export default function Message({avatar, date, content, id, user: {id: userId, pseudo}}) {
-    let currentUser = (new User).getCurrentUser()
+    const [userChangeAuthorized, setUserChangeAuthorized] = useState(false)
+    let currentUser = UserController.getCurrentUser()
 
-    let userIsAuthorized = false
+    let userIsAuthorized = userChangeAuthorized
     if ((currentUser.role === "ROLE_MEMBER" && currentUser.userId === userId) ||
         currentUser.role === "ROLE_ADMIN") {
         userIsAuthorized = true
     }
+
+    io.on('user.newRole', ({id, role}) => {
+        if (currentUser.userId === id) {
+            role === 'ROLE_ADMIN' ? setUserChangeAuthorized(true) : setUserChangeAuthorized(false)
+        }
+    })
 
     const _onDeleteMessage = (e) => {
         e.preventDefault()
@@ -23,6 +30,13 @@ export default function Message({avatar, date, content, id, user: {id: userId, p
         }
     }
 
+    function NewlineText(props) {
+        const text = props.text;
+        return text.split('\n').map((str, index) => {
+            return <p key={index}>{str}</p>
+        });
+    }
+    // console.log(content)
     return <>
         <div className="message">
             <img className="message__avatar"
@@ -33,25 +47,22 @@ export default function Message({avatar, date, content, id, user: {id: userId, p
                     <p className={"message__pseudo"}>{pseudo}</p>
                     <p className={"message__date"}>{date}</p>
                 </div>
-                <div className={"message__content"}>{content}</div>
+                <div className={"message__content"}>
+                    <NewlineText text={content}/>
+                </div>
             </div>
 
-            <button disabled={!userIsAuthorized} className='btn ms-auto' data-bs-toggle="dropdown" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill={userIsAuthorized ? 'white': 'currentColor'}
-                     className="bi bi-three-dots-vertical" viewBox="0 0 16 16">
-                    <path
-                        d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                </svg>
-            </button>
-            {
-                userIsAuthorized ?
-                    <>
-                        <ul className="dropdown-menu message__options p-2">
-                            <li onClick={_onDeleteMessage}>Supprimer le message</li>
-                        </ul>
+            <button onClick={_onDeleteMessage} disabled={!userIsAuthorized} className='btn ms-auto'>
+                {
+                    userIsAuthorized && <>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             className="bi bi-trash-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                        </svg>
                     </>
-                    : ''
-            }
+                }
+            </button>
 
         </div>
     </>
