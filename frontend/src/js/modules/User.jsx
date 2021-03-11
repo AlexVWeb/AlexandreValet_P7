@@ -1,5 +1,5 @@
 import React, {} from "react";
-import UserController from "../controllers/user"
+import UserController from "../Class/User"
 import socketIOClient from "socket.io-client";
 
 const ENDPOINT = process.env.API_URL;
