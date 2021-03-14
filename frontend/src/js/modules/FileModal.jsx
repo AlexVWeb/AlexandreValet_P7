@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
-
-export default function FileModal({fileObject, messageFile}) {
+export default function FileModal({modal, fileObject, messageFile}) {
     const [message, setMessage] = useState('')
     const [file, setFile] = useState(fileObject)
 
@@ -11,6 +10,7 @@ export default function FileModal({fileObject, messageFile}) {
         } else {
             messageFile({file})
         }
+        // modal.hide()
     }
 
     return <>

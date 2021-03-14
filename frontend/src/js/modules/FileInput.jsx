@@ -1,7 +1,6 @@
 import React, {} from 'react'
-import {Modal as boostrapModal} from 'bootstrap'
 
-export default function FileInput({fileObject}) {
+export default function FileInput({modal, fileObject}) {
     const handleChange = (e) => {
         let newFile = e.target.files[0]
         openModal()
@@ -9,10 +8,7 @@ export default function FileInput({fileObject}) {
     }
 
     const openModal = () => {
-        const getFileModal = document.querySelector('#fileModal')
-        const fileModal = new boostrapModal(getFileModal)
-        fileModal.show()
-        return getFileModal
+        modal.show()
     }
 
     return <>

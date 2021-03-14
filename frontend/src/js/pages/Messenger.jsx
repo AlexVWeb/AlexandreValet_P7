@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect, useState, useRef} from "react"
 import Sidebar from "../modules/Sidebar";
 import Message from "../modules/Message";
 import socketIOClient from "socket.io-client";
@@ -8,6 +8,7 @@ import UserController from "../Class/User";
 import FileInput from "../modules/FileInput";
 import {Modal} from "../modules/Modal";
 import FileModal from "../modules/FileModal";
+import {Modal as boostrapModal} from "bootstrap";
 
 moment.locale('fr')
 
@@ -23,6 +24,8 @@ export default function Messenger() {
     const [messages, setMessages] = useState([])
     const [messageFile, setMessageFile] = useState(null)
     const [temporyFile, setTemporyFile] = useState(null)
+    const modalFileRef = useRef()
+    const [modalFile, setModalFile] = useState()
 
     const scrollToBottom = (node) => {
         node.scrollTop = node.scrollHeight;
@@ -66,6 +69,13 @@ export default function Messenger() {
             setMessages(oldMessages)
 
             scrollToBottom(document.querySelector('.messenger_fil'));
+
+            modalFileRef.current.addEventListener('hidden.bs.modal', function () {
+                setTemporyFile(null)
+                setMessageFile(null)
+            })
+
+            setModalFile(new boostrapModal(modalFileRef.current))
         }
 
         effect()
@@ -91,52 +101,46 @@ export default function Messenger() {
         }
     }
 
-
     if (messageFile) {
-        let newMessage = {
-            date: moment().format("YYYY-MM-DD HH:mm:ss"),
-            user: {
-                id: user.userId,
-                pseudo: user.pseudo
+        const sendFile = async () => {
+            let newMessage = {
+                date: moment().format("YYYY-MM-DD HH:mm:ss"),
+                user: {
+                    id: user.userId,
+                    pseudo: user.pseudo
+                },
+                content: messageFile.message || null
+            }
+
+
+            let formMessageFile = new FormData()
+            formMessageFile.append('file', messageFile.file)
+            formMessageFile.append('date', newMessage.date)
+            formMessageFile.append('userId', newMessage.user.id)
+            formMessageFile.append('pseudo', newMessage.user.pseudo)
+            formMessageFile.append('content', newMessage.content)
+
+            let req = await fetch(`${process.env.API_URL}/api/message`, {
+                method: 'POST',
+                body: formMessageFile,
+            })
+
+            if (req.ok) {
+                setMessageFile(null)
+                setTemporyFile(null)
             }
         }
 
-        if (messageFile.message !== undefined) {
-            newMessage = {...newMessage, content: messageFile.message}
-        }
-
-        const fileReader = new FileReader(),
-            slice = messageFile.file.slice(0, 100000);
-
-        fileReader.readAsArrayBuffer(slice);
-        fileReader.onload = () => {
-            const arrayBuffer = fileReader.result;
-            newMessage = {
-                ...newMessage,
-                name: messageFile.file.name,
-                type: messageFile.file.type,
-                size: messageFile.file.size,
-                data: arrayBuffer}
-
-            io.emit('message.image', newMessage);
-        }
-    }
-
-    let modalFile = document.querySelector('#fileModal')
-    if (modalFile) {
-        modalFile.addEventListener('hidden.bs.modal', function () {
-            setTemporyFile(null)
-            setMessageFile(null)
-        })
+        sendFile()
     }
 
     return <>
         <div id={"messenger"} className={"container-fluid container_messenger"}>
             <Modal id={'modalAccount'} title="Éditer mon profil"><ModalProfil/></Modal>
 
-            <Modal id={'fileModal'}>
+            <Modal ref={modalFileRef} id={'fileModal'}>
                 {
-                    temporyFile && <FileModal fileObject={temporyFile} messageFile={(data) => setMessageFile(data)}/>
+                    temporyFile && <FileModal modal={modalFile} fileObject={temporyFile} messageFile={(data) => setMessageFile(data)}/>
                 }
             </Modal>
 
@@ -167,7 +171,7 @@ export default function Messenger() {
                            placeholder={'Envoyer un message à #général'} value={message}
                            title={"Champ d'ecriture du message"}/>
 
-                    <FileInput fileObject={(file) => setTemporyFile(file)}/>
+                    <FileInput modal={modalFile} fileObject={(file) => setTemporyFile(file)}/>
 
                     <button className={"btn btn-primary mx-3"} title={"Envoyer"}>
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none"

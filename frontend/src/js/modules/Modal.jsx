@@ -1,8 +1,8 @@
-import React, {} from "react";
+import React, {forwardRef} from "react";
 
-export const Modal = ({id, title, children}) => {
+export const Modal = forwardRef(({id, title, children}, ref) => {
     return <>
-        <div className={"modal fade"} id={id} tabIndex="-1" aria-hidden="true">
+        <div className={"modal fade"} id={id} tabIndex="-1" aria-hidden="true" ref={ref}>
             <div className="modal-dialog modal-dialog-centered">
                 <div className="modal-content">
                     {
@@ -19,4 +19,4 @@ export const Modal = ({id, title, children}) => {
             </div>
         </div>
     </>
-}
+})
