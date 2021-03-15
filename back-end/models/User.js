@@ -41,8 +41,8 @@ class User {
     async findByEmail(email) {
         let getUsers = await pool.query('SELECT * FROM users')
         return getUsers.find((user) => {
-            let email_user = CryptoJS.AES.decrypt(user.email, process.env.MASK_TOKEN);
-            let emailDecrypt = email_user.toString(CryptoJS.enc.Utf8);
+            let emailUser = CryptoJS.AES.decrypt(user.email, process.env.MASK_TOKEN);
+            let emailDecrypt = emailUser.toString(CryptoJS.enc.Utf8);
             if (email === emailDecrypt) {
                 return user
             } else {

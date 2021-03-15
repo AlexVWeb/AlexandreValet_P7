@@ -26,13 +26,11 @@ exports.signup = async (req, res) => {
             .is().min(5)
             .has().uppercase()
             .has().lowercase()
-            .has().digits(2)
-            .has().letters(2)
             .has().not().spaces()
         if (schemaPassword.validate(password)) {
             try {
                 const hash_password = await bcrypt.hash(password, 10)
-                const hash_email = CryptoJS.AES.encrypt(email, process.env.MASK_TOKEN).toString()
+                const hash_email = encodeEmail(email)
                 try {
                     await (new User()).insert({
                         email: hash_email,
@@ -104,6 +102,63 @@ exports.getAll = async (req, res) => {
     return res.status(200).json(users)
 }
 
+exports.update = async (req, res) => {
+    let token = jwt.decode(req.body.token)
+    let user = jwt.decode(req.body.data).setUser
+    if (token.userId !== user.id) {
+        return res.status(400).json("L'ID de l'utilisateur n'est pas correct")
+    }
+    let getUser = await (new User()).findById(user.id)
+
+    console.log(user)
+
+    let errors = []
+    let changes = []
+    // Vérification de l'existance des champs
+    if (user.email !== undefined && emailIsValid(user.email)) {
+        let emailExist = await (new User()).findByEmail(user.email)
+        if (!emailExist) {
+            await User.updateOne(user.id, 'email', encodeEmail(user.email))
+            changes.push({'email': true})
+        } else {
+            errors.push("Cet utilisateur existe déja")
+        }
+    }
+
+    if (user.pseudo !== undefined) {
+        if (user.pseudo !== getUser.pseudo) {
+            await User.updateOne(user.id, 'pseudo', user.pseudo)
+            changes.push({'pseudo': user.pseudo})
+        } else {
+            errors.push("Ce pseudo est déja le votre")
+        }
+    }
+
+    if (user.password !== undefined && user.checkPassword === undefined) {
+        errors.push("Veuillez répétez votre mot de passe")
+    }
+
+    if (user.password !== undefined) {
+        if (user.password === user.checkPassword) {
+            if (passwordIsValid(user.password)) {
+                const hash_password = await bcrypt.hash(user.password, 10)
+                await User.updateOne(user.id, 'password', hash_password)
+                changes.push({'password': true})
+            } else {
+                errors.push("Le mot de passe n'est pas suffisament sécurisé")
+            }
+        } else {
+            errors.push("Les mots de passe ne correspondent pas")
+        }
+    }
+
+    if (errors.length !== 0) {
+        return res.status(400).json({errors})
+    } else {
+        return res.status(200).json(changes)
+    }
+}
+
 function emailIsValid(email) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
@@ -121,6 +176,25 @@ function purgePublicUser(user) {
     let roles = JSON.parse(user.roles)
     user.roles = roles.toString()
     return user
+}
+
+function encodeEmail(email) {
+    return CryptoJS.AES.encrypt(email, process.env.MASK_TOKEN).toString()
+}
+
+function decodeEmail(emailEncode) {
+    let bytes = CryptoJS.AES.decrypt(emailEncode, process.env.MASK_TOKEN)
+    return bytes.toString(CryptoJS.enc.Utf8)
+}
+
+function passwordIsValid(password) {
+    const schemaPassword = new passwordValidator()
+    schemaPassword
+        .is().min(5)
+        .has().uppercase()
+        .has().lowercase()
+        .has().not().spaces()
+    return !!schemaPassword.validate(password);
 }
 
 exports.decodeToken = (token) => {
