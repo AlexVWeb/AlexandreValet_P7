@@ -45,8 +45,7 @@ const io = require('socket.io')(server, {
         origin: process.env.APP_URL,
         methods: ["GET", "POST"],
         credentials: true
-    },
-    allowEIO3: true
+    }
 });
 
 let interval;
@@ -57,6 +56,7 @@ io.on("connection", (socket) => {
 
     socket.on("message", async (message) => {
         await (new Message()).createTable()
+        //TODO: Check if user exist
         await (new Message()).insert({
             userID: message.user.id,
             date: message.date,
@@ -77,18 +77,15 @@ io.on("connection", (socket) => {
     socket.on("user.role", async ({id, role, currentUser}) => {
         const getUser = await (new User()).findById(id)
         // TODO: vérifier si le currentUser à les permissions
-        try {
-            await User.updateOne(id, 'roles', JSON.stringify([role]))
-            socket.broadcast.emit("user.newRole", {id, role})
-        } catch (e) {
-
-        }
+        await User.updateOne(id, 'roles', JSON.stringify([role]))
+        socket.broadcast.emit("user.newRole", {id, role})
     })
 
     socket.on('disconnect', () => {
         clearInterval(interval);
     })
 });
+global.io = io;
 
 server.on('error', errorHandler);
 server.listen(port, () => console.log(`Listening on port ${port}`));

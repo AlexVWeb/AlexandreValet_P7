@@ -12,7 +12,8 @@ class Message {
             id int PRIMARY KEY AUTO_INCREMENT,
             user_id int NOT NULL,
             date datetime NOT NULL,
-            content text
+            content text DEFAULT NULL,
+            image text DEFAULT NULL
         );`
         //@formatter:on
         await pool.query(createTable, (err) => {
@@ -20,10 +21,9 @@ class Message {
         })
     }
 
-    insert({userID, date, content}) {
-        let value = [userID, date, content]
-
-        return pool.query(`INSERT INTO ${this.tableName}(user_id, date, content) VALUE (?, ?, ?)`, value)
+    insert({userID, date, content = null, image=null}) {
+        let value = [userID, date, content, image]
+        return pool.query(`INSERT INTO ${this.tableName}(user_id, date, content, image) VALUE (?, ?, ?, ?)`, value)
             .then(r => {
                 return r
             })
