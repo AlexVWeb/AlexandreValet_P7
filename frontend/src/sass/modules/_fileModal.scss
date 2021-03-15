@@ -1,0 +1,29 @@
+#fileModal {
+  .modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .modal-body {
+    background: #242424f0;
+    color: white;
+  }
+}
+
+.file-previous {
+  width: 200px;
+
+  & > img {
+    object-fit: contain;
+    max-height: 200px;
+    max-width: 200px;
+    border-radius: 10px;
+  }
+}
+
+
+/*
+#modalAccount {
+  display: block;
+  opacity: 1 !important;
+}*/

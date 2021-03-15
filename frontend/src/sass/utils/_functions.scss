@@ -3,3 +3,12 @@
 @function space($i) {
   @return calc(#{$i} * var(--spacing));
 }
+
+
+@mixin hideScrollbar {
+  &::-webkit-scrollbar {
+    width: 0 !important
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

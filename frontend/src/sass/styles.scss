@@ -1,6 +1,6 @@
 // Vendors
 // ============
-@import "node_modules/bootstrap/scss/bootstrap";
+@import "../../node_modules/bootstrap/scss/bootstrap";
 
 // Utils
 // ============
@@ -12,6 +12,7 @@
 @import "modules/layouts";
 @import "modules/sidebar";
 @import "modules/images";
+@import "modules/fileModal";
 
 // Pages
 // ============
