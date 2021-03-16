@@ -32,6 +32,5 @@ Reddit - ils veulent que les employés écrivent et/ou partagent des articles av
 
 ### Front-End :
 - React
-- React Router  
-- TenorJS (Pour l'affichage des GIFs)
+- React Router
 - Bootstrap
