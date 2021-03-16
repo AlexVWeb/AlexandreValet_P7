@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import {notification, setCookie} from "../utils";
-import User from "../controllers/user"
+import User from "../Class/User"
 
 export default function Login() {
     const [email, setEmail] = useState('test@test.fr')
