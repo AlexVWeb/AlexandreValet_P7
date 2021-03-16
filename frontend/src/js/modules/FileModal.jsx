@@ -10,7 +10,7 @@ export default function FileModal({modal, fileObject, messageFile}) {
         } else {
             messageFile({file})
         }
-        // modal.hide()
+        modal.hide()
     }
 
     return <>
