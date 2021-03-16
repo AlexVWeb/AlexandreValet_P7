@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from "react"
-import Sidebar from "../modules/Sidebar";
+import {Sidebar} from "../modules/Sidebar";
 import Message from "../modules/Message";
 import socketIOClient from "socket.io-client";
 import moment from 'moment';
@@ -22,10 +22,12 @@ export default function Messenger() {
 
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([])
-    const [messageFile, setMessageFile] = useState(null)
-    const [temporyFile, setTemporyFile] = useState(null)
+    const [messageFile, setMessageFile] = useState()
+    const [temporyFile, setTemporyFile] = useState()
     const modalFileRef = useRef()
     const [modalFile, setModalFile] = useState()
+    const sidenavRef = useRef()
+    const [sidenav, setSidenav] = useState()
 
     const scrollToBottom = (node) => {
         node.scrollTop = node.scrollHeight;
@@ -33,6 +35,13 @@ export default function Messenger() {
 
     io.on("newMessage", (content) => {
         setMessages([...messages, content])
+    });
+
+    io.on("newMessage.file", (content) => {
+        console.log(content);
+        if (content) {
+            setMessages([...messages, content])
+        }
     });
 
     io.on("message.deleted", (id) => {
@@ -76,6 +85,7 @@ export default function Messenger() {
             })
 
             setModalFile(new boostrapModal(modalFileRef.current))
+            setSidenav(sidenavRef.current)
         }
 
         effect()
@@ -134,20 +144,42 @@ export default function Messenger() {
         sendFile()
     }
 
+    const _openSidenav = (e) => {
+        e.preventDefault()
+        let modalSidebar = sidenav
+        let sidebar = sidenav.querySelector('.sidenav')
+        sidebar.style.width = "350px";
+        modalSidebar.style.visibility = 'visible';
+        modalSidebar.style.opacity = '1';
+        modalSidebar.style.transition = 'visibility 0.2s linear, opacity 0.2s linear';
+        sidebar.style.transition = 'width 0.5s';
+    }
+
     return <>
         <div id={"messenger"} className={"container-fluid container_messenger"}>
             <Modal id={'modalAccount'} title="Éditer mon profil"><ModalProfil/></Modal>
 
             <Modal ref={modalFileRef} id={'fileModal'}>
                 {
-                    temporyFile && <FileModal modal={modalFile} fileObject={temporyFile} messageFile={(data) => setMessageFile(data)}/>
+                    temporyFile &&
+                    <FileModal modal={modalFile} fileObject={temporyFile} messageFile={(data) => setMessageFile(data)}/>
                 }
             </Modal>
 
-            <Sidebar/>
+            <Sidebar ref={sidenavRef}/>
+
             <div className={"messenger_contents"}>
                 <header>
                     <h3># Général</h3>
+                    <span onClick={_openSidenav} className="OpenSidebar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-box-arrow-in-left"
+                             viewBox="0 0 16 16">
+                          <path fillRule="evenodd"
+                                d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
+                          <path fillRule="evenodd"
+                                d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+                        </svg>
+                    </span>
                 </header>
 
                 <div className="messenger_fil">
