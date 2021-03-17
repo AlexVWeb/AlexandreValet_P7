@@ -2,11 +2,11 @@ import React, {useEffect, useState} from "react"
 import Swal from 'sweetalert2'
 
 export default function Register() {
-    const [pseudo, setPseudo] = useState('alex')
-    const [email, setEmail] = useState('test@test.fr')
-    const [confirm_email, setConfirmEmail] = useState('test@test.fr')
-    const [password, setPassword] = useState('Test69480!')
-    const [confirm_password, setConfirmPassword] = useState('Test69480!')
+    const [pseudo, setPseudo] = useState()
+    const [email, setEmail] = useState()
+    const [confirm_email, setConfirmEmail] = useState()
+    const [password, setPassword] = useState()
+    const [confirm_password, setConfirmPassword] = useState()
 
     const _onSubmit = async function (e) {
         e.preventDefault()
