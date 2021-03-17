@@ -20,29 +20,23 @@ exports.delete = async (req, res) => {
 exports.post = async (req, res) => {
     const file = req.file
     const message = req.body
+    let insert = await (new Message()).insert({
+        userID: message.userId,
+        date: message.date,
+        content: message.content,
+        image: file.filename
+    })
+    io.emit("newMessage.file", {
+        id: insert.insertId,
+        content: message.content,
+        date: message.date,
+        user: {
+            id: message.userId,
+            pseudo: message.pseudo
+        },
+        image: file.filename
+    })
 
-        try {
-            let insert = await (new Message()).insert({
-                userID: message.userId,
-                date: message.date,
-                content: message.content,
-                image: file.filename
-            })
+    // console.log(insert.insertId)
 
-            io.emit("newMessage.file", {
-                id: insert.insertId,
-                content: message.content,
-                date: message.date,
-                user: {
-                    id: message.userId,
-                    pseudo: message.pseudo
-                }
-            })
-
-            console.log(insert.insertId)
-
-            return res.status(200).json({success: true})
-        } catch (error) {
-            return res.status(400).json({error})
-        }
 }
