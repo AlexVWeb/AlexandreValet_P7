@@ -8,7 +8,7 @@ import UserController from "../Class/User";
 import FileInput from "../modules/FileInput";
 import {Modal} from "../modules/Modal";
 import FileModal from "../modules/FileModal";
-import {Modal as boostrapModal} from "bootstrap";
+import {Modal as BoostrapModal} from "bootstrap";
 
 moment.locale('fr')
 
@@ -28,6 +28,7 @@ export default function Messenger() {
     const [modalFile, setModalFile] = useState()
     const sidenavRef = useRef()
     const [sidenav, setSidenav] = useState()
+    const audioNotification = new Audio(`${process.env.APP_URL}/public/notification.mp3`)
 
     useEffect(() => {
         async function effect() {
@@ -68,7 +69,7 @@ export default function Messenger() {
                 setTemporyFile(null)
             })
 
-            setModalFile(new boostrapModal(modalFileRef.current))
+            setModalFile(new BoostrapModal(modalFileRef.current))
             setSidenav(sidenavRef.current)
         }
 
@@ -82,11 +83,14 @@ export default function Messenger() {
     io.on("newMessage", (content) => {
         setMessages([...messages, content])
         scrollToBottom(messengerFillRef.current);
+        audioNotification.play()
     });
 
     io.on("newMessage.file", (content) => {
         if (content) {
             setMessages([...messages, content])
+            scrollToBottom(messengerFillRef.current);
+            audioNotification.play()
         }
     });
 
