@@ -7,7 +7,7 @@ const io = socketIOClient(ENDPOINT, {
     withCredentials: true
 })
 
-export default function Message({avatar, date, content, id, user: {id: userId, pseudo}}) {
+export default function Message({avatar, date, content, id, image, user: {id: userId, pseudo}}) {
     const [userChangeAuthorized, setUserChangeAuthorized] = useState(false)
     let currentUser = UserController.getCurrentUser()
 
@@ -36,18 +36,21 @@ export default function Message({avatar, date, content, id, user: {id: userId, p
             return <p key={index}>{str}</p>
         });
     }
-    // console.log(content)
+
     return <>
         <div className="message">
             <img className="message__avatar"
                  src={avatar}
-                 alt={"avatar de " + pseudo}/>
+                 alt={`avatar message #${id}`}/>
             <div>
                 <div className={"message__header"}>
                     <p className={"message__pseudo"}>{pseudo}</p>
                     <p className={"message__date"}>{date}</p>
                 </div>
                 <div className={"message__content"}>
+                    {
+                        image && <img src={`${process.env.API_URL}/uploads/${image}`} className="message__image"/>
+                    }
                     <NewlineText text={content}/>
                 </div>
             </div>
