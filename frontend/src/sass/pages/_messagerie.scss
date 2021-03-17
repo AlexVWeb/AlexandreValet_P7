@@ -46,8 +46,12 @@
   transition: .3s all;
 
   &:hover {
-    background: #04644280;
+    background: #b2b2b280;
     border-radius: space(1);
+
+    button {
+      visibility: visible;
+    }
   }
 
   * {
@@ -90,6 +94,10 @@
   &__image {
     max-width: 250px;
     border-radius: 8px;
+  }
+
+  & > button {
+    visibility: hidden;
   }
 }
 
