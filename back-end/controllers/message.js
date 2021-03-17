@@ -17,7 +17,7 @@ exports.delete = async (req, res) => {
     }
 }
 
-exports.post = async (req, res) => {
+exports.post = async (req) => {
     const file = req.file
     const message = req.body
     let insert = await (new Message()).insert({
@@ -26,6 +26,7 @@ exports.post = async (req, res) => {
         content: message.content,
         image: file.filename
     })
+
     io.emit("newMessage.file", {
         id: insert.insertId,
         content: message.content,
@@ -36,7 +37,4 @@ exports.post = async (req, res) => {
         },
         image: file.filename
     })
-
-    // console.log(insert.insertId)
-
 }
