@@ -51,7 +51,7 @@ export default function User({id, pseudo, role, changeRole}) {
             <div className="user-avatar">
                 <img
                     src={'https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light'}
-                    className="avatar-50px status--online" alt={"avatar"}/>
+                    className="avatar-50px" alt={`Avatar utiliseur #${id}`}/>
                 {
                     id === currentUser.userId && <>
                         <div className={"status-overlay status--current"}>

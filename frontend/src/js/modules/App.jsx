@@ -1,4 +1,4 @@
-import React, {} from "react";
+import React, {useRef} from "react";
 import {
     BrowserRouter as Router,
     Switch,
@@ -11,10 +11,11 @@ import Register from "../pages/Register";
 import Messenger from "../pages/Messenger";
 import {deleteCookie, Images} from "../utils";
 import User from "../Class/User";
-import {Modal as boostrapModal} from 'bootstrap'
+import {Modal as boostrapModal, Collapse} from 'bootstrap'
 
 export const App = () => {
     const userIsLoggedIn = (new User()).isConnect()
+    const navbarRef = useRef()
 
     if (window.location.pathname === '/' && !userIsLoggedIn) {
         document.location.href = '/login'
@@ -67,19 +68,17 @@ export const App = () => {
     }
 
     return <>
-
         <Router>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="#">
                         <img src={Images('icon-left-font-monochrome-black.svg')} alt="Logo Navbar"/>
                     </a>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                    <button className="navbar-toggler" type="button" aria-controls="navbarPrimary"
+                            aria-expanded="false" aria-label="Toggle navigation" onClick={() => {new Collapse(navbarRef.current)}}>
                         <span className="navbar-toggler-icon"></span>
                     </button>
-                    <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div className="collapse navbar-collapse" id="navbarPrimary" ref={navbarRef}>
                         <div className="navbar-nav w-100">
                             {
                                 userIsLoggedIn ? <>
