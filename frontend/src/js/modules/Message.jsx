@@ -32,9 +32,13 @@ export default function Message({avatar, date, content, id, image, user: {id: us
 
     function NewlineText(props) {
         const text = props.text;
-        return text.split('\n').map((str, index) => {
-            return <p key={index}>{str}</p>
-        });
+        if (text) {
+            return text.split('\n').map((str, index) => {
+                return <p key={index}>{str}</p>
+            });
+        }
+
+        return ''
     }
 
     return <>
@@ -49,7 +53,7 @@ export default function Message({avatar, date, content, id, image, user: {id: us
                 </div>
                 <div className={"message__content"}>
                     {
-                        image && <img src={`${process.env.API_URL}/uploads/${image}`} className="message__image"/>
+                        image && <img src={`${process.env.API_URL}/uploads/${image}`} className="message__image" alt={""}/>
                     }
                     <NewlineText text={content}/>
                 </div>
