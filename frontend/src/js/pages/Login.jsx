@@ -66,7 +66,7 @@ export default function Login() {
                     />
                 </div>
                 <button type={"submit"} className={"btn btn-success w-100"}>Se connecter</button>
-                <a className='text-white mt-2' href="">Mot de passe oublié</a>
+                {/*<a className='text-white mt-2' href="">Mot de passe oublié</a>*/}
             </form>
         </div>
     </>
