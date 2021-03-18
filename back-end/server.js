@@ -2,6 +2,7 @@ const http = require('http');
 const app = require('./app');
 const Message = require("./models/Message");
 const User = require("./models/User");
+const fs = require("fs");
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -69,7 +70,12 @@ io.on("connection", (socket) => {
         const userMessage = await (new Message()).exist(id)
         if (currentUser.role === "ROLE_MEMBER" && currentUser.userId === userMessage.user_id ||
             currentUser.role === "ROLE_ADMIN") {
-            await (new Message()).delete(id)
+            const getMessage = await (new Message()).exist(id)
+            if (getMessage) {
+                fs.unlink(`uploads/${getMessage.image}`, async () => {
+                    await (new Message()).delete(id)
+                })
+            }
         }
         socket.broadcast.emit("message.deleted", id)
     })

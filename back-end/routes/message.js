@@ -20,7 +20,7 @@ router.post('/message',
             }
         });
     }),
-    body('content').not().isEmpty().trim().escape(),
+    // body('content').not().isEmpty().trim().escape(),
     message.post)
 
 module.exports = router

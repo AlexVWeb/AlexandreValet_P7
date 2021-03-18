@@ -20,6 +20,7 @@ exports.delete = async (req, res) => {
 exports.post = async (req) => {
     const file = req.file
     const message = req.body
+
     let insert = await (new Message()).insert({
         userID: message.userId,
         date: message.date,
@@ -29,7 +30,7 @@ exports.post = async (req) => {
 
     io.emit("newMessage.file", {
         id: insert.insertId,
-        content: message.content,
+        content: message.content === 'null' ? null : message.content,
         date: message.date,
         user: {
             id: message.userId,
