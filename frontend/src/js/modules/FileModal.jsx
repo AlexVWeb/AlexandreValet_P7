@@ -2,16 +2,14 @@ import React, {useState, useRef} from 'react'
 import moment from "moment";
 import UserController from "../Class/User";
 
-export default function FileModal({currentMessage, fileObject}) {
+export default function FileModal({modal, currentMessage, fileObject}) {
     const [message, setMessage] = useState(currentMessage)
     const [file, setFile] = useState(fileObject)
     const formModalRef = useRef()
     const _onSubmit = async (e) => {
         e.preventDefault()
+
         let user = UserController.getCurrentUser()
-
-        console.log('send file')
-
         let formMessageFile = new FormData()
         formMessageFile.append('file', fileObject)
         formMessageFile.append('date', moment().format("YYYY-MM-DD HH:mm:ss"))
@@ -25,11 +23,9 @@ export default function FileModal({currentMessage, fileObject}) {
         })
 
         if (req.ok) {
-            console.log(req)
+            modal.hide()
             formModalRef.reset()
         }
-
-        modal.hide()
     }
 
     return <>
