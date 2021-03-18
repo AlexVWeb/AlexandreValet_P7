@@ -137,7 +137,7 @@ export default function Messenger() {
             <Modal ref={modalFileRef} id={'fileModal'}>
                 {
                     temporyFile &&
-                    <FileModal currentMessage={message} fileObject={temporyFile}/>
+                    <FileModal modal={modalFile} currentMessage={message} fileObject={temporyFile}/>
                 }
             </Modal>
 
