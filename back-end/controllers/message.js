@@ -17,7 +17,7 @@ exports.delete = async (req, res) => {
     }
 }
 
-exports.post = async (req) => {
+exports.post = async (req, res) => {
     const file = req.file
     const message = req.body
 
@@ -38,4 +38,6 @@ exports.post = async (req) => {
         },
         image: file.filename
     })
+
+    res.status(201).json({success: `Message correctement envoyé`})
 }

@@ -3,6 +3,7 @@ const app = require('./app');
 const Message = require("./models/Message");
 const User = require("./models/User");
 const fs = require("fs");
+const {purgePublicUser} = require("./controllers/user");
 
 const normalizePort = val => {
     const port = parseInt(val, 10);
@@ -57,13 +58,15 @@ io.on("connection", (socket) => {
 
     socket.on("message", async (message) => {
         await (new Message()).createTable()
-        //TODO: Check if user exist
-        await (new Message()).insert({
-            userID: message.user.id,
-            date: message.date,
-            content: message.content
-        })
-        socket.broadcast.emit("newMessage", message);
+        const userMessage = await (new User()).findById(message.user.id)
+        if (userMessage) {
+            await (new Message()).insert({
+                userID: message.user.id,
+                date: message.date,
+                content: message.content
+            })
+            socket.broadcast.emit("newMessage", message);
+        }
     });
 
     socket.on("message.delete", async ({id, currentUser}) => {
@@ -81,10 +84,11 @@ io.on("connection", (socket) => {
     })
 
     socket.on("user.role", async ({id, role, currentUser}) => {
-        const getUser = await (new User()).findById(id)
-        // TODO: vérifier si le currentUser à les permissions
-        await User.updateOne(id, 'roles', JSON.stringify([role]))
-        socket.broadcast.emit("user.newRole", {id, role})
+        const getUser = purgePublicUser(await (new User()).findById(currentUser.userId))
+        if (getUser.roles === 'ROLE_ADMIN' && getUser.id !== id) {
+            socket.broadcast.emit("user.newRole", {id, role})
+            await User.updateOne(id, 'roles', JSON.stringify([role]))
+        }
     })
 
     socket.on('disconnect', () => {

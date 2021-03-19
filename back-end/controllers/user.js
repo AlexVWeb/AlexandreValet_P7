@@ -197,6 +197,10 @@ function passwordIsValid(password) {
     return !!schemaPassword.validate(password);
 }
 
+exports.purgePublicUser = (user) => {
+    return purgePublicUser(user)
+}
+
 exports.decodeToken = (token) => {
     return jwt.verify(token, process.env.JWT_TOKEN)
 }
