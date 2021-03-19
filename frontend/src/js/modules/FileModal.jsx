@@ -8,7 +8,6 @@ export default function FileModal({modal, currentMessage, fileObject}) {
     const formModalRef = useRef()
     const _onSubmit = async (e) => {
         e.preventDefault()
-
         let user = UserController.getCurrentUser()
         let formMessageFile = new FormData()
         formMessageFile.append('file', fileObject)
@@ -24,7 +23,7 @@ export default function FileModal({modal, currentMessage, fileObject}) {
 
         if (req.ok) {
             modal.hide()
-            formModalRef.reset()
+            formModalRef.current.reset()
         }
     }
 
