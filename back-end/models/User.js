@@ -38,6 +38,11 @@ class User {
         return row || null
     }
 
+    async findByPseudo(pseudo) {
+        const [row] = await pool.query(`SELECT * FROM users WHERE pseudo = "${pseudo}" LIMIT 1`)
+        return row || null
+    }
+
     async findByEmail(email) {
         let getUsers = await pool.query('SELECT * FROM users')
         return getUsers.find((user) => {

@@ -126,11 +126,16 @@ exports.update = async (req, res) => {
     }
 
     if (user.pseudo !== undefined) {
-        if (user.pseudo !== getUser.pseudo) {
-            await User.updateOne(user.id, 'pseudo', user.pseudo)
-            changes.push({'pseudo': user.pseudo})
+        let pseudoExist = await (new User()).findByPseudo(user.pseudo)
+        if (pseudoExist) {
+            errors.push("Ce pseudo est déjà utlisé")
         } else {
-            errors.push("Ce pseudo est déja le votre")
+            if (user.pseudo !== getUser.pseudo) {
+                await User.updateOne(user.id, 'pseudo', user.pseudo)
+                changes.push({'pseudo': user.pseudo})
+            } else {
+                errors.push("Ce pseudo est déja le votre")
+            }
         }
     }
 
