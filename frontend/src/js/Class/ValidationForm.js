@@ -1,3 +1,5 @@
+const passwordValidator = require('password-validator')
+
 class ValidationForm {
     /**
      * Vérifie la validité d'un email
@@ -68,6 +70,21 @@ class ValidationForm {
         } else {
             field.classList.add('is-valid')
         }
+    }
+
+    /**
+     * Vérifie si le mot de passe est valide
+     * @param password
+     * @returns {boolean}
+     */
+    passwordIsValid(password) {
+        const schemaPassword = new passwordValidator()
+        schemaPassword
+            .is().min(5)
+            .has().uppercase()
+            .has().lowercase()
+            .has().not().spaces()
+        return schemaPassword.validate(password)
     }
 }
 

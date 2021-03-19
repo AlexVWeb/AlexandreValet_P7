@@ -2,6 +2,7 @@ import React, {useState, createRef} from "react";
 import User from "../Class/User";
 import jwt from "jsonwebtoken"
 import ValidationForm from "../Class/ValidationForm";
+import {notification, setCookie} from "../utils";
 
 export const ModalProfil = () => {
     const currentUser = User.getCurrentUser()
@@ -25,10 +26,18 @@ export const ModalProfil = () => {
     }
     const onPassword = (e) => {
         setPassword(e.target.value)
+        ValidationForm.fieldClearRender(passwordRef.current)
     }
+
     const onCheckPassword = (e) => {
         setCheckPassword(e.target.value)
         ValidationForm.fieldClearRender(checkPasswordRef.current)
+    }
+
+    const clearForm = () => {
+        setEmail('')
+        setPassword('')
+        setCheckPassword('')
     }
 
     const onSubmit = async (e) => {
@@ -47,11 +56,15 @@ export const ModalProfil = () => {
             }
         }
 
-        // TODO: reactualiser le token avec le nouveau pseudo
         if (pseudo !== '' && pseudo !== currentUser.pseudo) setUser = {...setUser, pseudo}
 
         if (password !== '') setUser = {...setUser, password}
         if (checkPassword !== '') setUser = {...setUser, checkPassword}
+
+        if (password !== '' && !ValidationForm.passwordIsValid(password)) {
+            ValidationForm.renderInvalidField(passwordRef.current, "Le mot de passe n'est pas suffisament sécurisé")
+            errors = true
+        }
 
         if (password !== '' && checkPassword === '') {
             ValidationForm.renderInvalidField(checkPasswordRef.current, 'Veuillez répétez votre mot de passe')
@@ -89,7 +102,26 @@ export const ModalProfil = () => {
                         console.log(error)
                     })
                 } else {
-                    console.log(respJSON)
+                    await notification().fire({
+                        icon: 'success',
+                        title: "Sauvegarder avec succès",
+                    })
+                    clearForm()
+                    respJSON.forEach((val) => {
+                        if (val.pseudo !== undefined) {
+                            const newToken = jwt.sign(
+                                {
+                                    userId: currentUser.userId,
+                                    pseudo: val.pseudo,
+                                    role: currentUser.role
+                                },
+                                process.env.JWT_TOKEN,
+                                {expiresIn: '24h'}
+                            )
+                            setCookie('token', newToken)
+                            document.location.reload()
+                        }
+                    })
                 }
             }
         }

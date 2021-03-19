@@ -3,8 +3,8 @@ import {notification, setCookie} from "../utils";
 import User from "../Class/User"
 
 export default function Login() {
-    const [email, setEmail] = useState('test@test.fr')
-    const [password, setPassword] = useState('Test69480!')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
     const resetForm = () => {
         setEmail('')
