@@ -18,7 +18,7 @@ export const App = () => {
     const navbarRef = useRef()
 
     if (window.location.pathname === '/' && !userIsLoggedIn) {
-        document.location.href = '/login'
+        // document.location.href = '/login'
     }
 
     const LinkMenu = ({label, to, activeOnlyWhenExact, classname = ''}) => {

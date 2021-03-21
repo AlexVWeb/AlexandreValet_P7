@@ -70,9 +70,9 @@ Encore
     .enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
 
-/*    .addPlugin(
+    .addPlugin(
         new BrowserSyncPlugin({
-            proxy: 'https://groupomania.local',
+            // proxy: 'https://groupomania.local',
             host: 'localhost',
             port: 3001,
             middleware: [historyApiFallback()],
@@ -84,7 +84,7 @@ Encore
                 scroll: false
             }
         })
-    )*/
+    )
     .addPlugin(new Dotenv( { path: '../.env', systemvars: true } ))
 ;
 const config = Encore.getWebpackConfig();
