@@ -16,7 +16,7 @@ Encore
     // .copyFiles({from: './src/images', to: './images'})
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
-    .splitEntryChunks()
+    // .splitEntryChunks()
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
@@ -31,7 +31,7 @@ Encore
      */
     .cleanupOutputBeforeBuild()
     .enableSourceMaps(!Encore.isProduction())
-    .enableVersioning(Encore.isProduction())
+    // .enableVersioning(Encore.isProduction())
 
     // enables @babel/preset-env polyfills
     /*    .configureBabelPresetEnv((config) => {
@@ -70,7 +70,7 @@ Encore
     .enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
 
-    .addPlugin(
+/*    .addPlugin(
         new BrowserSyncPlugin({
             proxy: 'https://groupomania.local',
             host: 'localhost',
@@ -84,7 +84,7 @@ Encore
                 scroll: false
             }
         })
-    )
+    )*/
     .addPlugin(new Dotenv( { path: '../.env', systemvars: true } ))
 ;
 const config = Encore.getWebpackConfig();
