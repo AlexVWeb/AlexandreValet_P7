@@ -72,7 +72,7 @@ Encore
 
     .addPlugin(
         new BrowserSyncPlugin({
-            // proxy: 'https://groupomania.local',
+            proxy: 'https://groupomania.local',
             host: 'localhost',
             port: 3001,
             middleware: [historyApiFallback()],
