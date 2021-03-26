@@ -1,7 +1,40 @@
+
 # Projet 7 OpenClassroom
 
-### Scénario
+### Lancement du projet :
+- Copier le fichier .env.exemple et renommer le .env
+- Créer une base de donnée MySql en amont et ajouter les informations de connexion dans le fichier .env comme dans le .env.exemple
+- Allez dans le dossier backend et lancer la commande "npm install && npm server"
+- Allez dans le dossier front-end et lancer la commande "npm install && npm run build"
 
+Site testé en production avec un serveur Apache:
+Veuillez ajouter dans le VirtualHost de votre fichier .conf lié a votre domaine le code suivant :
+
+```apache
+<Directory /> 
+	RewriteEngine  On
+	RewriteCond  %{REQUEST_FILENAME} !-d
+	RewriteCond  %{REQUEST_FILENAME} !-f
+	RewriteRule ^ index.html [L]  
+</Directory>
+```
+
+#### Pour utiliser le Front:
+Le front a été développé depuis un serveur Apache et pour le faire correctement fonctionner, ajouter les lignes suivantes dans votre fichier .conf de votre domaine.
+
+### Librairies utilisées :
+#### Back-End :
+- Crypto JS (pour crypter certain champs)
+- Bcrypt (pour crypter les mots de passes)
+- Maria DB (base de donnée)
+- JsonWebToken
+
+#### Front-End :
+- React
+- React Router
+- Bootstrap
+
+### Scénario
 Vous êtes développeur depuis plus d'un an chez  **CONNECT-E**, une petite agence web regroupant une douzaine d'employés.
 
 Votre directrice, Stéphanie, invite toute l'agence à prendre un verre pour célébrer une bonne nouvelle ! Elle vient de signer un contrat pour un nouveau projet ambitieux ! 🥂
@@ -22,15 +55,3 @@ Stéphanie vous envoie un message via l’outil de messagerie instantanée de l�
 Reddit - ils veulent que les employés écrivent et/ou partagent des articles avec leurs collègues sur des sujets qui les intéressent.
 > Vous : Super, je prends note. Est-ce qu’ils t’ont fourni les spécifications fonctionnelles ?
 > Stéphanie : Oui, je te les envoie par mail tout de suite :)]
-
-## Librairies pensé :
-### Back-End :
-- Crypto JS (Pour crypter certain champs)
-- Bcrypt (Pour crypter les mots de passes)
-- Maria DB (Base de donnée)
-- JsonWebToken
-
-### Front-End :
-- React
-- React Router
-- Bootstrap
