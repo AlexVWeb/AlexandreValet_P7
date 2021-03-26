@@ -4,7 +4,7 @@ import {
     Switch,
     Route,
     Link,
-    useRouteMatch, useHistory
+    useRouteMatch, useHistory, useParams
 } from "react-router-dom";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -67,6 +67,14 @@ export const App = () => {
         modal.show()
     }
 
+    const Route404 = (e) => {
+        let path = useParams()
+        path = path[0]
+        if (!userIsLoggedIn && path !== '/login' && path !== '/register') document.location.replace('/login')
+        if (userIsLoggedIn && path !== '/messagerie') document.location.replace('/messagerie')
+        return '';
+    }
+
     return <>
         <Router>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -106,6 +114,7 @@ export const App = () => {
                         <Route path="/messagerie">
                             <Messenger/>
                         </Route>
+                        <Route path="*"><Route404/></Route>
                     </> : <>
                         <Route path="/login">
                             <Login/>
@@ -113,6 +122,7 @@ export const App = () => {
                         <Route path="/register">
                             <Register/>
                         </Route>
+                        <Route path="*"><Route404/></Route>
                     </>
                 }
             </Switch>
