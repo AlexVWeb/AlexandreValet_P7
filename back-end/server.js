@@ -75,9 +75,13 @@ io.on("connection", (socket) => {
             currentUser.role === "ROLE_ADMIN") {
             const getMessage = await (new Message()).exist(id)
             if (getMessage) {
-                fs.unlink(`uploads/${getMessage.image}`, async () => {
+                if (getMessage.image) {
+                    fs.unlink(`uploads/${getMessage.image}`, async () => {
+                        await (new Message()).delete(id)
+                    })
+                } else {
                     await (new Message()).delete(id)
-                })
+                }
             }
         }
         socket.broadcast.emit("message.deleted", id)
