@@ -18,6 +18,22 @@ Veuillez ajouter dans le VirtualHost de votre fichier .conf lié a votre domaine
 	RewriteRule ^ index.html [L]  
 </Directory>
 ```
+Comme ci-dessous :
+```apache
+<VirtualHost *:80>
+  ServerName groupomania.localhost
+  DocumentRoot /path/to/project/frontend/
+  LogLevel debug
+  ErrorLog /var/log/apache2/groupomania.localhost.error.log
+  CustomLog /var/log/apache2/groupomania.localhost.access.log combined
+  <Directory />
+    RewriteEngine  On
+    RewriteCond  %{REQUEST_FILENAME} !-d
+    RewriteCond  %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.html [L]
+  </Directory>
+</VirtualHost>
+```
 
 #### Pour utiliser le Front:
 Le front a été développé depuis un serveur Apache et pour le faire correctement fonctionner, ajouter les lignes suivantes dans votre fichier .conf de votre domaine.
