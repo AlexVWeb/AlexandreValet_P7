@@ -56,14 +56,18 @@ io.on("connection", (socket) => {
         clearInterval(interval);
     }
 
-    socket.on("message", async (message) => {
+    socket.on("message", async (message, callback) => {
         await (new Message()).createTable()
         const userMessage = await (new User()).findById(message.user.id)
         if (userMessage) {
-            await (new Message()).insert({
+            let insert = await (new Message()).insert({
                 userID: message.user.id,
                 date: message.date,
                 content: message.content
+            })
+            message.id = insert.insertId
+            callback({
+                message
             })
             socket.broadcast.emit("newMessage", message);
         }
@@ -71,20 +75,20 @@ io.on("connection", (socket) => {
 
     socket.on("message.delete", async ({id, currentUser}) => {
         const userMessage = await (new Message()).exist(id)
-        if (currentUser.role === "ROLE_MEMBER" && currentUser.userId === userMessage.user_id ||
-            currentUser.role === "ROLE_ADMIN") {
-            const getMessage = await (new Message()).exist(id)
-            if (getMessage) {
-                if (getMessage.image) {
-                    fs.unlink(`uploads/${getMessage.image}`, async () => {
+        console.log(userMessage)
+        if (userMessage) {
+            if (currentUser.role === "ROLE_MEMBER" && currentUser.userId === userMessage.user_id ||
+                currentUser.role === "ROLE_ADMIN") {
+                if (userMessage.image) {
+                    fs.unlink(`uploads/${userMessage.image}`, async () => {
                         await (new Message()).delete(id)
                     })
                 } else {
                     await (new Message()).delete(id)
                 }
+                socket.broadcast.emit("message.deleted", id)
             }
         }
-        socket.broadcast.emit("message.deleted", id)
     })
 
     socket.on("user.role", async ({id, role, currentUser}) => {

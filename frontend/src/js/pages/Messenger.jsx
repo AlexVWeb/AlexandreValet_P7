@@ -104,18 +104,21 @@ export default function Messenger() {
         if (message !== '') {
             let newMessage = {
                 content: message,
+                id: null,
                 date: moment().format("YYYY-MM-DD HH:mm:ss"),
                 user: {
                     id: user.userId,
                     pseudo: user.pseudo
                 }
             }
-            io.emit("message", newMessage)
-            setMessages([...messages, newMessage])
-            setMessage('')
-            setTimeout(() => {
-                scrollToBottom(messengerFillRef.current);
-            }, 500)
+            io.emit("message", newMessage, (response) => {
+                newMessage.id = response.message.id
+                setMessages([...messages, newMessage])
+                setMessage('')
+                setTimeout(() => {
+                    scrollToBottom(messengerFillRef.current);
+                }, 500)
+            })
         }
     }
 
