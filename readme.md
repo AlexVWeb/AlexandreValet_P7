@@ -3,7 +3,8 @@
 
 ### Lancement du projet :
 - Copier le fichier .env.exemple et renommer le .env
-- Créer une base de donnée MySql en amont et ajouter les informations de connexion dans le fichier .env comme dans le .env.exemple
+- Créer une base de donnée Maria en amont et ajouter les informations de connexion dans le fichier .env comme dans le .env.exemple
+- Vous pouvez ensuite importer les fichiers SQL situé dans le dossier SQL à la racine
 - Allez dans le dossier backend et lancer la commande "npm install && npm server"
 - Allez dans le dossier front-end et lancer la commande "npm install && npm run build"
 
